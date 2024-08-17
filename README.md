@@ -131,11 +131,15 @@ This module is licensed under the MIT License. See the LICENSE file for details.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
+## Requirements
+
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.0.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | >= 3.0.0 |
+
+## Providers
 
 ## Providers
 
@@ -146,6 +150,8 @@ This module is licensed under the MIT License. See the LICENSE file for details.
 
 ## Inputs
 
+## Inputs
+
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_node_name"></a> [node\_name](#input\_node\_name) | Proxmox node name | `string` | n/a | yes |
@@ -153,6 +159,9 @@ This module is licensed under the MIT License. See the LICENSE file for details.
 | <a name="input_pm_password"></a> [pm\_password](#input\_pm\_password) | Proxmox password | `string` | n/a | yes |
 | <a name="input_pm_user"></a> [pm\_user](#input\_pm\_user) | Proxmox user | `string` | n/a | yes |
 | <a name="input_vm_id"></a> [vm\_id](#input\_vm\_id) | VM ID to check | `number` | n/a | yes |
+| <a name="input_vm_exists_file_path"></a> [vm\_exists\_file\_path](#input\_vm\_exists\_file\_path) | Path to the file where VM existence result is stored | `string` | `"vm_exists.txt"` | no |
+
+## Outputs
 
 ## Outputs
 
