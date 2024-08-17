@@ -106,25 +106,29 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all tags and branches
 
-    - name: Terraform publish
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.0.0
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform publish
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.0.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-    - name: Publish to Terraform Registry
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        VERSION=${GITHUB_REF#refs/tags/v}
-        echo $VERSION > latestrelease.txt
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add .
-        git commit -m "Release $VERSION"
-        git push
-        git tag -a "v$VERSION" -m "Release $VERSION"
-        git push origin "v$VERSION"
+      - name: Publish to Terraform Registry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}          
+          git checkout -b temp-release-branch
+          echo $VERSION > latestrelease.txt
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add latestrelease.txt
+          git commit -m "Release $VERSION"
+          git push origin temp-release-branch:main
+          git tag -f $VERSION
+          git push origin $VERSION
+          git push origin --delete temp-release-branch
