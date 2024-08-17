@@ -19,7 +19,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.5.0  # Updated to a more recent version
+        terraform_version: 1.0.0
 
     - name: Terraform Format
       run: terraform fmt -check -recursive
@@ -87,24 +87,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Install terraform-docs
-      run: |
-        curl -Lo ./terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-$(uname)-amd64.tar.gz
-        tar -xzf terraform-docs.tar.gz
-        chmod +x terraform-docs
-        sudo mv terraform-docs /usr/local/bin/
-
     - name: Render terraform docs
-      run: |
-        terraform-docs markdown table --output-file README.md --output-mode inject .
-
-    - name: Commit changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add README.md
-        git commit -m "docs: Update module documentation" || echo "No changes to commit"
-        git push
+      uses: terraform-docs/gh-actions@v1.0.0
+      with:
+        working-dir: .
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
+        git-commit-message: "docs: Update module documentation"
+        config-file: .terraform-docs.yml
+        fail-on-diff: "false"
+        git-push-user-name: "GitHub Action"
+        git-push-user-email: "action@github.com"
 
   publish:
     name: Publish
@@ -118,7 +112,7 @@ jobs:
     - name: Terraform publish
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.5.0
+        terraform_version: 1.0.0
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Publish to Terraform Registry

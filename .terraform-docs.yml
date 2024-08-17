@@ -8,11 +8,19 @@ sections:
     - outputs
 
 content: |-
+  ## Requirements
+
   {{ .Requirements }}
+
+  ## Providers
 
   {{ .Providers }}
 
+  ## Inputs
+
   {{ .Inputs }}
+
+  ## Outputs
 
   {{ .Outputs }}
 
