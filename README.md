@@ -153,6 +153,7 @@ This module is licensed under the MIT License. See the LICENSE file for details.
 | <a name="input_pm_password"></a> [pm\_password](#input\_pm\_password) | Proxmox password | `string` | n/a | yes |
 | <a name="input_pm_user"></a> [pm\_user](#input\_pm\_user) | Proxmox user | `string` | n/a | yes |
 | <a name="input_vm_id"></a> [vm\_id](#input\_vm\_id) | VM ID to check | `number` | n/a | yes |
+| <a name="input_vm_exists_file_path"></a> [vm\_exists\_file\_path](#input\_vm\_exists\_file\_path) | Path to the file where VM existence result is stored | `string` | `"vm_exists.txt"` | no |
 
 ## Outputs
 
