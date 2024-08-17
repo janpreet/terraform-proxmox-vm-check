@@ -1,3 +1,7 @@
+[![Latest Release](https://img.shields.io/github/v/release/janpreet/terraform-proxmox-vm-check?style=flat-square)](https://github.com/janpreet/terraform-proxmox-vm-check/releases)
+[![License](https://img.shields.io/github/license/janpreet/terraform-proxmox-vm-check?style=flat-square)](https://github.com/janpreet/terraform-proxmox-vm-check/blob/main/LICENSE)
+[![Terraform Registry](https://img.shields.io/badge/terraform-registry-blue.svg?style=flat-square)](https://registry.terraform.io/modules/janpreet/vm-check/proxmox)
+[![Validate and Publish Terraform Module](https://github.com/janpreet/terraform-proxmox-vm-check/actions/workflows/validate.yaml/badge.svg)](https://github.com/janpreet/terraform-proxmox-vm-check/actions/workflows/validate.yaml)
 # Terraform Proxmox VM Check Module
 
 This Terraform module checks for the existence of a VM in Proxmox Virtual Environment. It uses the Proxmox API to query the status of a specified VM and returns a boolean indicating whether the VM exists.
