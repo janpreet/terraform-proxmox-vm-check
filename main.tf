@@ -19,7 +19,3 @@ data "local_file" "vm_exists" {
   depends_on = [null_resource.check_vm]
   filename   = var.vm_exists_file_path
 }
-
-output "vm_exists" {
-  value = data.local_file.vm_exists.content == "true"
-}

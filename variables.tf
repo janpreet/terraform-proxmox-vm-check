@@ -27,5 +27,5 @@ variable "vm_id" {
 variable "vm_exists_file_path" {
   description = "Path to the file where VM existence result is stored"
   type        = string
-  default     = "${path.root}/vm_exists.txt"
+  default     = "vm_exists.txt"
 }
