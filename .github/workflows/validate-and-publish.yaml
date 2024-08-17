@@ -1,0 +1,129 @@
+name: Validate and Publish Terraform Module
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [created]
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.0.0
+
+    - name: Terraform Format
+      run: terraform fmt -check -recursive
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Validate
+      run: terraform validate -no-color
+
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v3
+      with:
+        tflint_version: v0.44.1
+
+    - name: Run TFLint
+      run: tflint --format=compact
+
+    - name: Setup OPA
+      uses: open-policy-agent/setup-opa@v2
+      with:
+        version: latest
+
+    - name: OPA Test
+      run: opa test tests/*.rego
+
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: .
+        framework: terraform
+
+    - name: Run Terrascan
+      uses: tenable/terrascan-action@main
+      with:
+        iac_type: 'terraform'
+        iac_version: 'v14'
+        policy_type: 'aws'
+        only_warn: true
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        ignore-unfixed: true
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Render terraform docs
+      uses: terraform-docs/gh-actions@v1.0.0
+      with:
+        working-dir: .
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
+        git-commit-message: "docs: Update module documentation"
+        config-file: .terraform-docs.yml
+
+  publish:
+    name: Publish
+    needs: [validate, security, docs]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Terraform publish
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.0.0
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Publish to Terraform Registry
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        curl -sS https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name > latestrelease.txt
+        echo $VERSION > latestrelease.txt
+        terraform-docs markdown ./ > README.md
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Release $VERSION"
+        git push
+        git tag -a "v$VERSION" -m "Release $VERSION"
+        git push origin "v$VERSION"
