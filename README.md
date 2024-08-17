@@ -198,6 +198,8 @@ output:
     <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
+## Requirements
+
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
@@ -206,10 +208,14 @@ output:
 
 ## Providers
 
+## Providers
+
 | Name | Version |
 |------|---------|
 | <a name="provider_local"></a> [local](#provider\_local) | >= 2.0.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | >= 3.0.0 |
+
+## Inputs
 
 ## Inputs
 
@@ -221,6 +227,8 @@ output:
 | <a name="input_pm_user"></a> [pm\_user](#input\_pm\_user) | Proxmox user | `string` | n/a | yes |
 | <a name="input_vm_id"></a> [vm\_id](#input\_vm\_id) | VM ID to check | `number` | n/a | yes |
 | <a name="input_vm_exists_file_path"></a> [vm\_exists\_file\_path](#input\_vm\_exists\_file\_path) | Path to the file where VM existence result is stored | `string` | `"vm_exists.txt"` | no |
+
+## Outputs
 
 ## Outputs
 
